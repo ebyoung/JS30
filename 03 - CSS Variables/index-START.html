@@ -21,6 +21,24 @@
   <img src="https://source.unsplash.com/7bwQXzbF6KE/800x500">
 
   <style>
+    /* 최상위 레벨인 root에서 변수 선언 */
+    /* 만약 하위 레벨에서 변수를 재선언하면 여기에서 선언한 변수를 덮어씀 */
+    :root {
+      --base: yellow;
+      --spacing: 10px;
+      --blur: 10px;
+    }
+
+    img {
+      /* css에서 변수를 사용할 때에는 var 키워드 사용, 변수명은 --로 시작 */
+      padding: var(--spacing);
+      background: var(--base);
+      filter: blur(var(--blur));
+    }
+
+    .h1 {
+      color: var(--base);
+    }
 
     /*
       misc styles, nothing to do with CSS variables
@@ -45,6 +63,31 @@
   </style>
 
   <script>
+    // controls 클래스를 가진 태그의 하위 input 태그들이 담긴 NodeList 반환, Array와의 차이점은 일부 메서드만 사용 가능하다는 것
+    const inputs = document.querySelectorAll('.controls input')
+    
+    // 
+    // Arrow Function으로 하면 this가 window가 됨 왜??
+    function handleUpdate() {
+      // dataset은 html 요소에서 data- 형태의 속성들(ex. data-sizing="px")이 담긴 객체
+      const suffix = this.dataset.sizing || '' // data-sizing 속성이 없는 경우(base) undefined가 나오는 것을 방지
+      // input 태그들의 name 속성을 미리 필요한 css변수명과 맞춰놨기 때문에 --this.name으로 접근 가능
+      // value값에 필요한 단위(suffix)를 붙여 css변수에 넣어주면 스타일이 적용됨
+      document.documentElement.style.setProperty(`--${this.name}`, this.value + suffix)
+    }
+
+    // 각각의 input 태그들의 값에 변화가 생길 때 함수 실행
+    // 마우스로 컨트롤러를 이동시켜서 원하는 위치에 놓으면 그 때 함수 실행
+    inputs.forEach(input => {
+      input.addEventListener('change', handleUpdate)
+    })
+    // 마우스가 요소 움직이기만 해도 함수 실행
+    // 단 마우스만 움직이면 값의 변화가 없기 때문에 실질적인 변화는 일어나지 않음
+    // 마우스로 컨트롤러를 이동시키면 모든 값의 변화에 연속적으로 반응
+    inputs.forEach(input => {
+      input.addEventListener('mousemove', handleUpdate)
+    })
+
   </script>
 
 </body>
