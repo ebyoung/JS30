@@ -37,28 +37,78 @@
     
     // Array.prototype.filter()
     // 1. Filter the list of inventors for those who were born in the 1500's
-
+    // 길게 쓰면(else {return false} 는 필요없음)
+    // const result = inventors.filter(function(inventor) {
+    //   if (1500 <= inventor.year && inventor.year < 1600) {
+    //     return true
+    //   }
+    // })
+    const result1 = inventors.filter(inventor => 1500 <= inventor.year && inventor.year < 1600)
+    console.log(result1)
     // Array.prototype.map()
     // 2. Give us an array of the inventors first and last names
-
+    const result2 = inventors.map(inventor => `${inventor.first} ${inventor.last}`)
+    console.log(result2)
     // Array.prototype.sort()
     // 3. Sort the inventors by birthdate, oldest to youngest
+    // 길게 쓰면
+    // const result3 = inventors.sort((a, b) => {
+    //   // a 가 b 보다 어리다면
+    //   if (a.year > b.year) {
+    //     // 아래로
+    //     return 1
+    //   } else {
+    //     // 어리지 않다면 위로
+    //     return -1
+    //   }
+    // })
+    const result3 = inventors.sort((a, b) => a.year > b.year ? 1:-1)
+    console.log(result3)
 
     // Array.prototype.reduce()
     // 4. How many years did all the inventors live all together?
-
+    // reduce: acc에 값을 누적시키는 함수, 마지막 인자로 acc의 초기값을 넣어줘야 함
+    const result4 = inventors.reduce((acc, inventor) => acc + (inventor.passed - inventor.year), 0)
+    console.log(result4)
     // 5. Sort the inventors by years lived
+    // 오래 산 사람이 위로(-1)
+    const result5 = inventors.sort((a, b) => (a.passed - a.year) > (b.passed - b.year) ? -1:1)
+    console.log(result5)
 
     // 6. create a list of Boulevards in Paris that contain 'de' anywhere in the name
     // https://en.wikipedia.org/wiki/Category:Boulevards_in_Paris
+    // 링크에서 실행
+    // const category = document.querySelector('.mw-category')
+    // NodeList는 map함수를 지원하지 않기 때문에 스프레드 연산자로 원소들을 배열에 다시 넣어줌
+    // const links = [...category.querySelectorAll('a')]
 
+    // const de = links
+    // .map(link => link.textContent)
+    // .filter(streetName => streetName.includes('de'))
 
     // 7. sort Exercise
     // Sort the people alphabetically by last name
+    const result7 = people.sort((last, next) => {
+      // 성을 알기 위해 ,+공백 으로 나눠서 0번(앞쪽)값 가져오기
+      lastName = last.split(', ')[0]
+      nextName = next.split(', ')[0]
+      return lastName > nextName ? 1:-1
+    })
+    console.log(result7)
 
     // 8. Reduce Exercise
     // Sum up the instances of each of these
     const data = ['car', 'car', 'truck', 'truck', 'bike', 'walk', 'car', 'van', 'bike', 'walk', 'car', 'van', 'car', 'truck' ];
+
+    const result8 = data.reduce((obj, item) => {
+      if (!obj[item]) {
+        obj[item] = 0
+      }
+      obj[item] += 1
+      // 만들어지는 오브젝트를 꼭 반환해야 함
+      return obj
+    }, {})
+    console.log(result8)
 
   </script>
 </body>
