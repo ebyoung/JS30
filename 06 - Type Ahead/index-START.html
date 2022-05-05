@@ -42,25 +42,69 @@ function numberWithCommas(x) {
 
 function displayMatches() {
   const matchArray = findMatches(this.value, cities)
-  const html = matchArray.map(place => {
+  // const html = matchArray.map(place => {
+  //   const regex = new RegExp(this.value, 'gi')
+  //   // 검색어와 일치하는 부분을 강조하기 위해 해당 부분만 클래스를 추가해주기
+  //   const cityName = place.city.replace(regex, `<span class="hl">${this.value}</span>`)
+  //   const stateName = place.state.replace(regex, `<span class="hl">${this.value}</span>`)
+  //   return `
+  //     <li>
+  //       <span class="name">${cityName}, ${stateName}</span>
+  //       <span class="population">${numberWithCommas(place.population)}</span>
+  //     </li>
+  //   `
+  // }).join('')
+  // // innerHTML 말고 다른 방법을 찾아보자
+  // suggestions.innerHTML = html
+
+  const results = matchArray.map(place => {
     const regex = new RegExp(this.value, 'gi')
-    // 검색어와 일치하는 부분을 강조하기 위해 해당 부분만 클래스를 추가해주기
-    const cityName = place.city.replace(regex, `<span class="hl">${this.value}</span>`)
-    const stateName = place.state.replace(regex, `<span class="hl">${this.value}</span>`)
-    return `
-      <li>
-        <span class="name">${cityName}, ${stateName}</span>
-        <span class="population">${numberWithCommas(place.population)}</span>
-      </li>
-    `
-  }).join('')
-  // innerHTML 말고 다른 방법을 찾아보자
-  suggestions.innerHTML = html
+    
+    const cityNameHl = document.createElement('span')
+    cityNameHl.classList.add('hl')
+    cityNameHl.innerText = `${this.value}`
+    
+    const stateNameHl = document.createElement('span')
+    stateNameHl.classList.add('hl')
+    stateNameHl.innerText = `${this.value}`
+    
+    const cityName = document.createElement('span')
+    if (place.city.match(regex)) {
+      const otherCityName = place.city.split(regex)
+      cityName.append(otherCityName[0], cityNameHl, otherCityName[1])
+    } else {
+      cityName.innerText = place.city
+    }
+    
+    const stateName = document.createElement('span')
+    if (place.state.match(regex)) {
+      const otherStateName = place.state.split(regex)
+      stateName.append(otherStateName[0], stateNameHl, otherStateName[1])
+    } else {
+      stateName.innerText = place.state
+    }
+
+    const name = document.createElement('span')
+    name.append(cityName, ', ', stateName)
+    const population = document.createElement('span')
+    population.innerText = `${numberWithCommas(place.population)}`
+
+    const li = document.createElement('li')
+    li.append(name, population)
+    return li
+  })
+
+  const suggestions = document.querySelector('.suggestions')
+  const newSuggestions = document.createElement('ul')
+  newSuggestions.classList.add('suggestions')
+  results.forEach(result => {
+    newSuggestions.append(result)
+  })
+  console.log(newSuggestions)
+  suggestions.replaceWith(newSuggestions)
 }
 
 const searchInput = document.querySelector('.search')
-const suggestions = document.querySelector('.suggestions')
-
 searchInput.addEventListener('input', displayMatches)
 
 
