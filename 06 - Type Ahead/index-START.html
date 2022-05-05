@@ -17,6 +17,54 @@
 <script>
 const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
 
+const cities = []
+// fetch: 요청을 보내고 promise 객체를 반환하는 함수
+// 응답받은 내용 안에있는 로우 데이터의 타입을 확인해 직접 변환해 줘야함
+// blob 자체는 응답받은 모든 내용이 들어있기 때문에 JSON.parse(blob)는 불가능
+// .json메서드는 또 다른 promise 객체를 반환
+fetch(endpoint)
+  .then(blob => blob.json())
+  // data에 들어있는 원소들을 spread연산자를 이용해 cities에 넣어줌
+  .then(data => cities.push(...data))
+
+function findMatches(wordToMatch, cities) {
+  return cities.filter(place => {
+    // g: 전역플래그 -> js의 정규표현식 이해 필요
+    const regex = new RegExp(wordToMatch, 'gi')
+    return place.city.match(regex) || place.state.match(regex)
+  })
+}
+
+// 숫자에 콤마 찍어주기
+function numberWithCommas(x) {
+  return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+}
+
+function displayMatches() {
+  const matchArray = findMatches(this.value, cities)
+  const html = matchArray.map(place => {
+    const regex = new RegExp(this.value, 'gi')
+    // 검색어와 일치하는 부분을 강조하기 위해 해당 부분만 클래스를 추가해주기
+    const cityName = place.city.replace(regex, `<span class="hl">${this.value}</span>`)
+    const stateName = place.state.replace(regex, `<span class="hl">${this.value}</span>`)
+    return `
+      <li>
+        <span class="name">${cityName}, ${stateName}</span>
+        <span class="population">${numberWithCommas(place.population)}</span>
+      </li>
+    `
+  }).join('')
+  // innerHTML 말고 다른 방법을 찾아보자
+  suggestions.innerHTML = html
+}
+
+const searchInput = document.querySelector('.search')
+const suggestions = document.querySelector('.suggestions')
+
+searchInput.addEventListener('input', displayMatches)
+
+
+
 </script>
 </body>
 </html>
