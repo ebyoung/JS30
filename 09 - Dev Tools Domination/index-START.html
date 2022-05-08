@@ -18,29 +18,57 @@
     }
 
     // Regular
-
+    console.log('hello')
     // Interpolated
-
+    console.log('Hello I an a %s string!', '👍')
     // Styled
-
+    console.log('%c I am some greate text',
+    'font-size: 50px; text-shadow: 10px 10px 0 blue; background: red;')
     // warning!
-
+    console.warn('Oh No')
     // Error :|
-
+    console.error('raise error')
     // Info
-
+    console.info('today is sunday')
     // Testing
-
+    const p = document.querySelector('p')
+    // 첫 번째 인자가 false인 경우 두번째 인자를 출력
+    console.assert(p.classList.contains('hi'), 'Wrong')
     // clearing
-
+    console.clear()
     // Viewing DOM Elements
-
+    console.log(p)
+    // 모든 속성 보기
+    console.dir(p)
     // Grouping together
-
+    dogs.forEach(dog => {
+      console.group(`${dog.name}`)
+      // console.Collapsed(`${dog.name}`): 접힌 채로 출력, 원하면 펼쳐서
+      console.log(`name: ${dog.name}`)
+      console.log(`age: ${dog.age}`)
+      console.log(`detail: ${dog.name} is ${dog.age} years old`)
+      console.groupEnd(`${dog.name}`)
+    })
     // counting
-
+    console.count('Wes')
+    console.count('Wes')
+    console.count('Steve')
+    console.count('Wes')
+    console.count('Steve')
+    console.count('Wes')
+    console.count('Wes')
+    console.count('Steve')
     // timing
+    console.time('fetching data')
+    fetch('https://api.github.com/users/wesbos')
+      .then(data => data.json())
+      .then(data => {
+        console.timeEnd('fetching data')
+        console.log(data)
+      })
 
+    // table
+    console.table(dogs)
   </script>
 </body>
 </html>
