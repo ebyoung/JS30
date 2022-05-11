@@ -7,6 +7,17 @@
 </head>
 <body>
 <script>
+  const pressed = []
+  const secretCode = 'wesbos'
+  window.addEventListener('keyup', (event) => {
+    pressed.push(event.key)
+    // secretCode의 길이 만큼만 남기고 앞에서 부터 삭제해나가기 위해(그냥 0부터 출발해도 될 것 같은데 왜??)
+    pressed.splice(-secretCode.length-1, pressed.length - secretCode.length)
+    if (pressed.join('').includes(secretCode)) {
+      // 시크릿 코드를 입력하면
+      cornify_add()
+    }
+  })
 </script>
 </body>
 </html>
