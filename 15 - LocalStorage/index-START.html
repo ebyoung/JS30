@@ -27,9 +27,112 @@
 
 <script>
   const addItems = document.querySelector('.add-items');
-  const itemsList = document.querySelector('.plates');
-  const items = [];
+  let itemsList = document.querySelector('.plates')
+  // 로컬 스토리지에 저장된 내용이 있다면 불러오기
+  const items = JSON.parse(localStorage.getItem('items')) || []
+  let isFirst = true
+  
+  function addItem(event) {
+    event.preventDefault()
+    // name='item' 속성을 가진 인풋 태그에 입력된 내용 가져오기
+    const text = this.querySelector('[name=item]').value
+    const item = {
+      text,
+      done: false,
+    }
+    // const idx = items.length
+    items.push(item)
+    // 비효율적인 방법 그냥 쓰자
+    populateList(items, itemsList)
 
+    // 새로운 방법: 처음에만 갈아 끼우고 그 뒤로는 그냥 붙여주기
+    // const newLi = document.createElement('li')
+    // const newLabel = document.createElement('label')
+    // 체크박스 만들어 갱신하기가 어려움
+    // const newInput = document.createElement('input')
+    // newInput.type = 'checkbox'
+    // newInput.id = `item${idx}`
+
+    // newLabel.innerText = item.text
+    // newLabel.for = `item${idx}`
+    // newLi.append(newInput, newLabel)
+    // if (isFirst) {
+    //   isFirst = false
+    //   const newItemsList = document.createElement('ul')
+    //   newItemsList.classList.add('plates')
+    //   newItemsList.append(newLi)
+    //   itemsList.replaceWith(newItemsList)
+    //   itemsList = newItemsList
+    // } else {
+    //   itemsList.append(newLi)
+    // }
+
+    // 로컬 스토리지에 저장
+    localStorage.setItem('items', JSON.stringify(items))
+    // 입력된 내용 지워주기
+    this.reset()
+  }
+
+
+
+  // innerHTML을 쓰지 않기 위해 새로운 태그를 만들어서 갈아끼우기
+  // 매번 전체 목록을 새로 만들어서 갈아끼워야 하므로 비효율적
+  // 그치만 일단 쓰자
+  function populateList(plates = [], platesList) {
+    const newPlatesList = document.createElement('ul')
+    newPlatesList.classList.add('plates')
+    plates.map((plate, idx) => {
+      const newLi = document.createElement('li')
+      const newLabel = document.createElement('label')
+
+      const newInput = document.createElement('input')
+      newInput.type = 'checkbox'
+      newInput.dataset.index = idx
+      newInput.id = `item${idx}`
+      plate.done ? newInput.setAttribute('checked', true) : ''
+
+      newLabel.innerText = plate.text
+      newLabel.setAttribute('for', `item${idx}`)
+      newLi.append(newInput, newLabel)
+      newPlatesList.append(newLi)
+    })
+    platesList.replaceWith(newPlatesList)
+    itemsList = document.querySelector('.plates')
+    itemsList.addEventListener('click', toggleDone)
+  }
+
+  function toggleDone(event) {
+
+  }
+
+  addItems.addEventListener('submit', addItem)
+
+  // 처음 페이지가 로드될 때 실행될 코드
+  // 하지만 이 시점에는 아직 요소들이 생성되기 전
+  // 밑에서 생성되고, 입력이 들어올 때 마다 생성
+  // const checkboxes = document.querySelectorAll('input')
+  // checkboxes.forEach(checkbox => {
+    //   checkbox.addEventListener('click', () => alert('checked'))
+    // })
+    
+  // 따라서 각각의 요소가 아닌 상위 요소 itemsList에 이벤트리스너를 달아줘야 함
+  function toggleDone(event) {
+    
+    // 인풋 태그가 아니면 건너뛰기
+    if (!event.target.matches('input')) return
+    console.log('hi')
+    const element = event.target
+    const idx = element.dataset.index
+    items[idx].done = !items[idx].done
+    localStorage.setItem('items', JSON.stringify(items))
+    populateList(items, itemsList)
+  }
+
+
+  // items에 데이터가 없다면 초기화를 하지 않음 -> Loading Tapas... 출력
+  if (items.length) {
+    populateList(items, itemsList)
+  }
 </script>
 
 
