@@ -182,6 +182,27 @@
     </li>
   </ul>
 <script>
+  // queryselectorAll은 array가 아닌 nodeList를 반환하기 때문에 변환 필요
+  const timeNodes = Array.from(document.querySelectorAll('[data-time]'))
+  const seconds = timeNodes
+    .map((node => node.dataset.time))
+    .map(timeCode => {
+      // :를 기준으로 분과 초를 분리해 초로 환산
+      // parseFloat 함수를 콜백 함수로 넣어주면 .map(str => parseFloat(str)) 과 같은 결과
+      const [mins, secs] = timeCode.split(':').map(parseFloat)
+      return mins * 60 + secs
+    })
+    .reduce((total, vidSeconds) => total + vidSeconds)
+
+  let secondsLeft = seconds
+  // 누적된 초를 시 분 초 로 다시 분리
+  const hours = Math.floor(secondsLeft / 3600)
+  secondsLeft %= 3600
+  const mins = Math.floor(secondsLeft / 60)
+  secondsLeft %= 60
+
+  console.log(hours, mins, secondsLeft)
+
 </script>
 </body>
 </html>
